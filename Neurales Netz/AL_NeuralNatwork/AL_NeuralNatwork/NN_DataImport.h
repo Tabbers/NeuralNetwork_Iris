@@ -20,13 +20,32 @@ namespace nn
 			return substr;
 		}
 
-		static std::vector<float> GetDataEntry(unsigned int index, std::vector<types::PlantData> &data)
+		static std::vector<float> GetDataEntry(unsigned int index, std::vector<types::PlantData> &data, std::vector<float> &teachingValues)
 		{
 			std::vector<float> singleEntry;
 			singleEntry.reserve(data[index].numberOfEntries);
 			for (unsigned int i = 0u; i < data[index].numberOfEntries; i++)
 			{
 				singleEntry.push_back(data[index].Array[i]);
+				
+			}
+			if (data[index].plantClass == "Iris-setosa")
+			{
+				teachingValues.push_back(1.0f);
+				teachingValues.push_back(0.0f);
+				teachingValues.push_back(0.0f);
+			}
+			else if (data[index].plantClass == "Iris-versicolor")
+			{
+				teachingValues.push_back(0.0f);
+				teachingValues.push_back(1.0f);
+				teachingValues.push_back(0.0f);
+			}
+			else if (data[index].plantClass == "Iris-virginica")
+			{
+				teachingValues.push_back(0.0f);
+				teachingValues.push_back(0.0f);
+				teachingValues.push_back(1.0f);
 			}
 			return singleEntry;
 		}

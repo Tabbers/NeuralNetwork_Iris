@@ -12,34 +12,40 @@ void Init(nn::Network* net)
 
 	//Set the feed forward and Backpropagation Functions of the Hidden Layer
 	functions.feedFrowardFunction = nn::functions::TanH;
-	functions.feedFrowardFunction = nn::functions::TanHDerivation;
+	functions.backPorpagationFunction = nn::functions::TanHDerivation;
 	HiddenNeurons[0].SetActivationfunction(functions);
+	HiddenNeurons[0].g_Output = false;
 
 	functions.feedFrowardFunction = nn::functions::Sinusoid;
-	functions.feedFrowardFunction = nn::functions::SinusoidDerivation;
+	functions.backPorpagationFunction = nn::functions::SinusoidDerivation;
 	HiddenNeurons[1].SetActivationfunction(functions);
+	HiddenNeurons[1].g_Output = false;
 
 	functions.feedFrowardFunction = nn::functions::RelU;
-	functions.feedFrowardFunction = nn::functions::RelUDerivation;
+	functions.backPorpagationFunction = nn::functions::RelUDerivation;
 	HiddenNeurons[2].SetActivationfunction(functions);
+	HiddenNeurons[2].g_Output = false;
 
 	functions.feedFrowardFunction = nn::functions::SoftSign;
-	functions.feedFrowardFunction = nn::functions::SoftSignDerivation;
+	functions.backPorpagationFunction = nn::functions::SoftSignDerivation;
 	HiddenNeurons[3].SetActivationfunction(functions);
+	HiddenNeurons[3].g_Output = false;
 
 	//Set the feed Forward ans backpropagation Functions of the Output layer
-	functions.feedFrowardFunction = nn::functions::BinStep;
-	functions.feedFrowardFunction = nn::functions::BinStepDerivation;
+	functions.feedFrowardFunction = nn::functions::TanH;
+	functions.backPorpagationFunction = nn::functions::TanHDerivation;
 	OutputNeurons[0].SetActivationfunction(functions);
+	OutputNeurons[0].g_Output = true;
 
-	functions.feedFrowardFunction = nn::functions::BinStep;
-	functions.feedFrowardFunction = nn::functions::BinStepDerivation;
+	functions.feedFrowardFunction = nn::functions::TanH;
+	functions.backPorpagationFunction = nn::functions::TanHDerivation;
 	OutputNeurons[1].SetActivationfunction(functions);
+	OutputNeurons[1].g_Output = true;
 
-	functions.feedFrowardFunction = nn::functions::BinStep;
-	functions.feedFrowardFunction = nn::functions::BinStepDerivation;
+	functions.feedFrowardFunction = nn::functions::TanH;
+	functions.backPorpagationFunction = nn::functions::TanHDerivation;
 	OutputNeurons[2].SetActivationfunction(functions);
-
+	OutputNeurons[2].g_Output = true;
 }
 
 void main()

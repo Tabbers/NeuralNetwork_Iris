@@ -11,7 +11,9 @@ namespace nn
 
 		void Init(short,short);
 		std::vector<float> DoWork(std::vector<float> &);
+		void Learn(std::vector<float>&, std::vector<float>&, std::vector<nn::types::CorrectionValueWeightPair>&, unsigned int );
 		inline Neuron* GetNeurons() { return m_neurons; };
+		inline unsigned int GetNumberOfNeurons() { return m_numberOfNeurons; }
 	private:
 		short m_numberOfNeurons;
 		Neuron* m_neurons;

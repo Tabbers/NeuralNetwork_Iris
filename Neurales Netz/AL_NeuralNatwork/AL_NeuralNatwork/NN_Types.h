@@ -4,6 +4,7 @@ namespace nn
 {
 	namespace types
 	{
+		const float LEARNRATE = 0.10f;
 		struct PlantData
 		{
 			union
@@ -19,6 +20,11 @@ namespace nn
 			};
 			std::string plantClass;
 			unsigned int numberOfEntries = 4;
+		};
+		struct CorrectionValueWeightPair
+		{
+			float EdgeCorrection;
+			float EdgeWeight;
 		};
 
 		static float normalizeInputs(float x, float dl, float dh, float nl, float nh )

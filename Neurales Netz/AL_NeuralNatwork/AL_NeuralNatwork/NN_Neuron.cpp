@@ -12,34 +12,72 @@ namespace
 		std::vector<float> weights = neuron.GetInputWeights();
 		for (unsigned int i = 0u; i < weights.size(); ++i)
 		{
-			data[i] = nn::types::normalizeInputs(data[i], 0.0f, 8.0f, 0.0f, 1.0f);
-		}
-		for (unsigned int i = 0u; i < weights.size(); ++i)
-		{
 			netinput += data[i] * weights[i];
 		}
-		netinput += neuron.GetBias();
-
+		neuron.SetInput(netinput);
 		float output = neuron.GetActivationfunction().feedFrowardFunction(netinput);
 		neuron.SetOutput(output);
 		return output;
 	}
 
-	static void NeuronLearn(nn::Neuron &neuron)
+	static float CalculateDiscrapency(float desiredOutput, float actualOutput)
 	{
-		float previousInput = neuron.GetOutput();
-		std::vector<float> weights = neuron.GetInputWeights();
-		for (unsigned int i = 0u; i < weights.size(); ++i)
+		return desiredOutput - actualOutput;
+	}
+
+	static std::vector<nn::types::CorrectionValueWeightPair> NeuronLearn(nn::Neuron &neuron, float desiredOutput, std::vector<float> inputs, float netj, std::vector<nn::types::CorrectionValueWeightPair> &correctionValues, 
+		unsigned int currenNeuronNumber, unsigned int numberOfNeurons)
+	{
+		std::vector<nn::types::CorrectionValueWeightPair> nextLayerPartialCorrectionVal;
+		std::vector<float> weightsOld = neuron.GetInputWeights();
+		std::vector<float> weightsNew;
+		weightsNew.resize(weightsOld.size());
+		float correctionValue = 0.0f;
+		if (neuron.g_Output)
 		{
-			weights[i] = neuron.GetActivationfunction().backPorpagationFunction(previousInput)*();
+			float previousOutput = neuron.GetOutput();
+			for (unsigned int i = 0u; i < weightsNew.size(); ++i)
+			{
+				correctionValue = neuron.GetActivationfunction().backPorpagationFunction(netj)*CalculateDiscrapency(desiredOutput, previousOutput);
+				float dWeight = (nn::types::LEARNRATE * correctionValue *  inputs[i]);
+				weightsNew[i] = weightsOld[i] + dWeight;
+
+				nn::types::CorrectionValueWeightPair pair;
+				pair.EdgeCorrection = correctionValue;
+				pair.EdgeWeight = weightsNew[i];
+
+				nextLayerPartialCorrectionVal.push_back(pair);
+
+			}
 		}
-		neuron.SetInputWeights(weights);
+		else
+		{
+			float summedOutgoingWeightsWithCorrectionValues = 0.0f;
+			for (unsigned int j = 0u; j < weightsNew.size(); ++j)
+			{
+				unsigned int index = (currenNeuronNumber * (numberOfNeurons-1)) + j;
+				summedOutgoingWeightsWithCorrectionValues += correctionValues[index].EdgeCorrection * correctionValues[index].EdgeWeight;
+			}
+			for (unsigned int i = 0u; i < weightsNew.size(); ++i)
+			{
+				correctionValue = neuron.GetActivationfunction().backPorpagationFunction(netj) * summedOutgoingWeightsWithCorrectionValues;
+				float dWeight = (nn::types::LEARNRATE * correctionValue *  inputs[i]);
+				weightsNew[i] = weightsOld[i] + dWeight;
+				
+				nn::types::CorrectionValueWeightPair pair;
+				pair.EdgeCorrection = correctionValue;
+				pair.EdgeWeight = weightsNew[i];
+
+				nextLayerPartialCorrectionVal.push_back(pair);
+			}
+		}		
+		neuron.SetInputWeights(weightsNew);
+		return nextLayerPartialCorrectionVal;
 	}
 
 }
 
-nn::Neuron::Neuron() : m_bias(Randomizer::GetRandom(-0.5f, 0.5f))
-					 , m_previousOutput(0.0f)
+nn::Neuron::Neuron() : m_previousOutput(0.0f)
 {
 }
 
@@ -53,7 +91,7 @@ void nn::Neuron::CreateConnections(short numberOfINputs)
 	m_inputWeights.reserve(numberOfINputs);
 	for (unsigned int i = 0u; i < numberOfINputs; i++)
 	{
-		float weight = 1.0f;
+		float weight = Randomizer::GetRandom(-1.0f, 1.0f);
 		m_inputWeights.push_back(weight);
 	}
 }
@@ -63,6 +101,7 @@ float nn::Neuron::DoWork(std::vector<float> &input)
 	return NeuronDoWork(input, *this);
 }
 
-void nn::Neuron::Learn()
+std::vector<nn::types::CorrectionValueWeightPair> nn::Neuron::Learn(float desiredOutput, std::vector<float> &inputs, std::vector<nn::types::CorrectionValueWeightPair> &prevLayersCorrectionValues, unsigned int NeuronNumber, unsigned int MaxNeurons)
 {
+	return NeuronLearn(*this, desiredOutput,inputs, this->m_previousWeightedInput, prevLayersCorrectionValues, NeuronNumber, MaxNeurons);
 }

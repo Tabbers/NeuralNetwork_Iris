@@ -23,10 +23,16 @@ namespace nn
 		~Network();
 
 		void Learn(std::vector<nn::types::PlantData> &);
+		inline Layer* GetHiddenLayer() { return m_LayersHidden; }
+		inline Layer* GetOutputLayer() { return m_Output; }
+
+		inline short GetNumberOfHiddenlayers() { return m_NumOfHiddenLayers; }
+
 	private:
 		const float MIN_ACCAPTED_ERROR = 0.01f;
 		float m_error;
 
+		short m_NumOfHiddenLayers;
 		Layer* m_LayersHidden;
 		Layer* m_Output;
 	};

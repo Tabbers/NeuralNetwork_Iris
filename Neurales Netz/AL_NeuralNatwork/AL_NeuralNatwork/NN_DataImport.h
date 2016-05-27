@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 #include "NN_Types.h"
 
@@ -19,12 +20,22 @@ namespace nn
 			return substr;
 		}
 
-		static 	std::vector<float> ShuffleAndCreateData(std::vector<types::PlantData> &data)
+		static std::vector<float> GetDataEntry(unsigned int index, std::vector<types::PlantData> &data)
 		{
-			std::vector<float> output;
-			
-			std::random_shuffle()
+			std::vector<float> singleEntry;
+			singleEntry.reserve(data[index].numberOfEntries);
+			for (unsigned int i = 0u; i < data[index].numberOfEntries; i++)
+			{
+				singleEntry.push_back(data[index].Array[i]);
+			}
+			return singleEntry;
+		}
 
+		static 	std::vector<types::PlantData> ShuffleData(std::vector<types::PlantData> &data)
+		{
+			std::vector<types::PlantData> datacopy = data;
+			std::random_shuffle(datacopy.begin(), datacopy.end());
+			return datacopy;
 		}
 
 		static void SplitIntoLeaningAndTestData(std::vector<types::PlantData> &data, std::vector<types::PlantData> &learningdata, std::vector<types::PlantData> &testdata)

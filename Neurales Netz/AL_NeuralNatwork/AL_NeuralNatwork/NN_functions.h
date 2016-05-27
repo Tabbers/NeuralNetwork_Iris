@@ -52,6 +52,26 @@ namespace nn
 			return 1 / (intermediateValue * intermediateValue);
 		}
 
+		//BinaryStep and the corresponding Derivated Function
+		static float BinStep(float x)
+		{
+			if (x < 0)
+			{
+				return 0;
+			}
+			else
+			{
+				return 1;
+			}
+		}
+		static float BinStepDerivation(float x)
+		{
+			if (x != 0)
+			{
+				return 0;
+			}
+		}
+
 		//ReLU and the corresponding Derivated Function
 		static float RelU(float x)
 		{

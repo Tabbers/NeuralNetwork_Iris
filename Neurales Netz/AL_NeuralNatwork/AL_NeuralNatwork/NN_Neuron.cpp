@@ -9,10 +9,14 @@ namespace
 		// sum all inputs + bias == netinput
 		// insert into activation function 0> output
 		float netinput = 0;
-		std::vector<float> inputs = neuron.GetInputs();
-		for (unsigned int i = 0u; i < 4; ++i)
+		std::vector<float> weights = neuron.GetInputWeights();
+		for (unsigned int i = 0u; i < weights.size(); ++i)
 		{
-			netinput += data[i] * inputs[i];
+			data[i] = nn::types::normalizeInputs(data[i], 0.0f, 8.0f, 0.0f, 1.0f);
+		}
+		for (unsigned int i = 0u; i < weights.size(); ++i)
+		{
+			netinput += data[i] * weights[i];
 		}
 		netinput += neuron.GetBias();
 
@@ -23,13 +27,19 @@ namespace
 
 	static void NeuronLearn(nn::Neuron &neuron)
 	{
-
+		float previousInput = neuron.GetOutput();
+		std::vector<float> weights = neuron.GetInputWeights();
+		for (unsigned int i = 0u; i < weights.size(); ++i)
+		{
+			weights[i] = neuron.GetActivationfunction().backPorpagationFunction(previousInput)*();
+		}
+		neuron.SetInputWeights(weights);
 	}
 
 }
 
 nn::Neuron::Neuron() : m_bias(Randomizer::GetRandom(-0.5f, 0.5f))
-				 , m_previousOutput(0.0f)
+					 , m_previousOutput(0.0f)
 {
 }
 

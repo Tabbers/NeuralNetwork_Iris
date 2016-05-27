@@ -18,6 +18,7 @@ namespace nn
 				float Array[4];
 			};
 			std::string plantClass;
+			unsigned int numberOfEntries = 4;
 		};
 
 		static float normalizeInputs(float x, float dl, float dh, float nl, float nh )
